@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using TestProject.Data;
+using TestProject.Models;
 
 namespace TestProject.Controllers
 {
@@ -6,16 +8,20 @@ namespace TestProject.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
+
+
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly AppDbContext _db;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, AppDbContext db)
         {
             _logger = logger;
+            _db = db;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
@@ -30,10 +36,28 @@ namespace TestProject.Controllers
             .ToArray();
         }
 
-        [HttpGet("Test")]
-        public IActionResult Test()
+        [HttpPost("Test")]
+        public ActionResult Add(StudentDto studentDto)
         {
-            return Ok();
+            var data = new Student()
+            {
+                Name = studentDto.Name,
+                Description = studentDto.Description,
+                Address = studentDto.Address
+            };
+
+            _db.students.Add(data);
+            _db.SaveChanges();
+
+            return Ok(data);
         }
+
+        [HttpGet("TestGet")]
+        public ActionResult GetStd()
+        {
+            var res = _db.students.ToList();
+            return Ok(res);
+        }
+
     }
 }

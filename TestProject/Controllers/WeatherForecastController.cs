@@ -59,11 +59,21 @@ namespace TestProject.Controllers
             return Ok(res);
         }
 
-        [HttpGet("TestGeAllt")]
-        public ActionResult GetStdAll()
+        [HttpPost("Update")]
+        public ActionResult Update(int id, StudentDto dto)
         {
-            var res = _db.students.ToList();
-            return Ok(res);
+            var db = _db.students.FirstOrDefault(x => x.Id == id);
+            if (db == null)
+                return BadRequest("No Student Found");
+            var std = new StudentDto()
+            {
+                Name = dto.Name,
+                Address = dto.Address,
+                Description = dto.Description,
+            };
+
+            var update = _db.Update(std);
+            return Ok(update);
         }
 
 

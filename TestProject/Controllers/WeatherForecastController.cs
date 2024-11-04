@@ -59,5 +59,13 @@ namespace TestProject.Controllers
             return Ok(res);
         }
 
+        [HttpGet("TestGeAllt")]
+        public ActionResult GetStdAll()
+        {
+            var res = _db.students.ToList();
+            return Ok(res);
+        }
+
+
     }
 }
